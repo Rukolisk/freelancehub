@@ -16,15 +16,25 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  trustedOrigins: [process.env.TRUSTED_ORIGIN ?? ""],
+  trustedOrigins: [
+    process.env.TRUSTED_ORIGIN ? process.env.TRUSTED_ORIGIN : "*",
+  ],
   user: {
     additionalFields: {
       role: {
         type: "string",
         required: false,
-        defaultValue: "USER",
+        defaultValue: "CLIENT",
+        input: true,
+      },
+      bio: {
+        type: "string",
+        required: false,
+        defaultValue: null,
         input: true,
       },
     },
   },
 });
+
+export type Session = typeof auth.$Infer.Session;
