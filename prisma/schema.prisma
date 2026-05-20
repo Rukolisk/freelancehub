@@ -9,18 +9,25 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Better Auth models ───────────────────────────────────────
 model User {
   id            String    @id @default(cuid())
   name          String
   email         String    @unique
-  password      String
-  role          String    @default("USER")
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  role          String    @default("CLIENT")
+  bio           String?
   sessions      Session[]
   accounts      Account[]
+
+  services            Service[]
+  missionsAsFreelance Mission[]    @relation("FreelanceMissions")
+  missionsAsClient    Mission[]    @relation("ClientMissions")
+  reviewsReceived     Review[]     @relation("FreelanceReviews")
+  reviewsGiven        Review[]     @relation("ClientReviews")
 
   @@map("user")
 }
@@ -61,14 +68,73 @@ model Account {
   @@map("account")
 }
 
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 
-  @@index([identifier])
-  @@map("verification")
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  category    String
+  tags        String[]
+  isActive    Boolean  @default(true)
+  freelanceId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  freelance User      @relation(fields: [freelanceId], references: [id], onDelete: Cascade)
+  missions  Mission[]
+
+  @@map("service_offer")
 }
+
+model Mission {
+  id          String        @id @default(cuid())
+  status      String        @default("PENDING")
+  serviceId   String
+  clientId    String
+  freelanceId String
+  notes       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  service   Service      @relation(fields: [serviceId], references: [id])
+  client    User         @relation("ClientMissions", fields: [clientId], references: [id])
+  freelance User         @relation("FreelanceMissions", fields: [freelanceId], references: [id])
+  logs      MissionLog[]
+  review    Review?
+
+  @@map("mission")
+}
+
+model MissionLog {
+  id         String   @id @default(cuid())
+  missionId  String
+  fromStatus String?
+  toStatus   String
+  changedBy  String
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("mission_log")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  missionId   String   @unique
+  freelanceId String
+  clientId    String
+  rating      Int
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  freelance User    @relation("FreelanceReviews", fields: [freelanceId], references: [id])
+  client    User    @relation("ClientReviews", fields: [clientId], references: [id])
+
+  @@map("review")
+}
+
