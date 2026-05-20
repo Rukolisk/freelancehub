@@ -16,7 +16,9 @@ import {
   UpdateServiceDto,
   ServiceQueryDto,
 } from "./dto/services.dto";
-
+import { Roles } from "src/common/decorators/roles.decorator";
+import { Role } from "src/common/types";
+import { RolesGuard } from "src/common/guards/Roles.guard";
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
 import { TagsTransformPipe } from "src/common/pipes/tags-transform.pipe";
 import { AuthGuard } from "@thallesp/nestjs-better-auth";
@@ -28,6 +30,7 @@ export class ServicesController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @Roles(Role.FREELANCE)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Créer un service (FREELANCE uniquement)" })
   create(@Body() dto: CreateServiceDto, @CurrentUser() user) {
@@ -44,7 +47,8 @@ export class ServicesController {
   }
 
   @Get("my")
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.FREELANCE)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Mes services (FREELANCE)" })
   getMyServices(@CurrentUser() user) {
@@ -58,7 +62,8 @@ export class ServicesController {
   }
 
   @Put(":id")
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.FREELANCE)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Modifier un service (propriétaire)" })
   update(
@@ -70,7 +75,8 @@ export class ServicesController {
   }
 
   @Delete(":id")
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.FREELANCE)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Supprimer un service (propriétaire)" })
   remove(@Param("id") id: string, @CurrentUser() user) {
