@@ -3,7 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-
+import { AllExceptionsFilter } from "./common/filter/http-exception.filter";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: false, // pour betterauth
@@ -15,6 +15,9 @@ async function bootstrap() {
       transform: true, // transforme automatiquement les types
     }),
   );
+
+  app.useGlobalFilters(new AllExceptionsFilter());
+
   const config = new DocumentBuilder()
     .setTitle("FreelanceHub API")
     .setDescription("Plateforme de mise en relation freelances/clients")
