@@ -3,3 +3,12 @@ export enum Role {
   CLIENT = "CLIENT",
   ADMIN = "ADMIN",
 }
+
+export enum MissionStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  DISPUTED = "DISPUTED",
+}
