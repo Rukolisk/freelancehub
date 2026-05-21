@@ -20,6 +20,7 @@ export class TagsTransformPipe implements PipeTransform {
         .filter((tag: string) => tag.length > 0);
     }
 
+    value.tags = [...new Set(value.tags)];
     return value;
   }
 }
