@@ -3,11 +3,11 @@ services:
     image: postgres:16
     container_name: freelancehub-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: freelancehub
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -17,12 +17,12 @@ services:
       dockerfile: Dockerfile
     container_name: freelancehub-api
     ports:
-      - '3001:3001'
+      - "3001:3001"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/freelancehub
     volumes:
-      - .:/app # monte ton code local dans le conteneur
-      - /app/node_modules # garde les node_modules du conteneur
+      - .:/app 
+      - /app/node_modules 
     depends_on:
       - postgres
 
