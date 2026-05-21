@@ -29,7 +29,7 @@ export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.FREELANCE)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Créer un service (FREELANCE uniquement)" })
