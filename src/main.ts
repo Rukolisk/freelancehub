@@ -25,6 +25,7 @@ async function bootstrap() {
     )
     .addTag("Auth", "Authentification et gestion de session")
     .addTag("Services", "Offres de services freelance")
+    .addTag("Admin", "Administration — ADMIN uniquement")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
